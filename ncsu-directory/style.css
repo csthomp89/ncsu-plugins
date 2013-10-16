@@ -1,0 +1,44 @@
+/* Person Plugin Styles */
+
+.ncsu_person {
+	width: 100%;
+	float: left;
+	padding: 0.5em 0 0.5em 0;
+}
+
+.ncsu_person:nth-child(2n+2) {
+	background-color: #f3f3f3;
+}
+
+.ncsu_person div.person_info {
+	float: left;
+	width: 65%;
+}
+
+.ncsu_person p {
+	line-height: 1.2em !important;
+	margin: 0.5em !important;
+}
+
+.ncsu_person img {
+	padding: 1em;
+	float: left;
+	width: 125px;
+	height: auto;
+}
+
+.ncsu_person p.description {
+	font-style: italic;
+}
+
+p.letter_section {
+	font-size: 4em !important;
+	font-family: 'UniversCondensedBold', 'arial', sans-serif;
+	padding: 0 0 0 0.25em !important;
+	margin: 0 !important;
+	clear: both;
+}
+
+p.letter_section a {
+	color: #666 !important;
+}

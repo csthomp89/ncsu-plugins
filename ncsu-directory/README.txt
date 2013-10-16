@@ -1,0 +1,2 @@
+-Must have wp_head() in template for directory to be correctly formatted
+-Your server needs to have php5-ldap installed
