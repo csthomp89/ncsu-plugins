@@ -26,54 +26,14 @@ if (! class_exists('WRAPAuthenticationPlugin')) {
 			add_action('password_reset', array(&$this, 'disable_function'));
 			add_action('check_passwords', array(&$this, 'generate_password'), 10, 3);
 			add_filter('show_password_fields', array(&$this, 'disable_password_fields'));
+			add_action('user_register', 'add_wrap_user');
+			add_action('delete_user', 'delete_wrap_user');
 		}
 
 
 		/*************************************************************
 		 * Plugin hooks
 		 *************************************************************/
-
-		/*
-		 * Adding Unity ID to .htaccess file on user creation
-		 */
-
-		add_action('user_register', 'add_wrap_user');
-
-		function add_wrap_user($user_id) {
-
-		        $file = file_get_contents('/afs/eos.ncsu.edu/www/cos-writeable/.htaccess2');
-
-		        $before_length = strpos($file, "#ADD NEW USER HERE");
-
-		        $before = substr($file, 0, $before_length);
-		        $after = substr($file, $before_length);
-
-		        $user_info = get_userdata($user_id);
-		        $username = $user_info->user_login;
-		        file_put_contents('/afs/eos.ncsu.edu/www/cos-writeable/.htaccess2', $before . "  require user " . $username . "\n" . $after);
-		}
-
-		/*
-		 * Removing Unity ID from .htaccess file on user deletion
-		 */
-
-		add_action('delete_user', 'delete_wrap_user');
-
-		function delete_wrap_user($user_id) {
-        		$file = file_get_contents($_SERVER['DOCUMENT_ROOT'] . '/.htaccess');
-
-		        $user_info = get_userdata($user_id);
-		        $username = $user_info->user_login;
-
-		        $before_length = strpos($file, "  require user " . $username);
-
-		        $user_length = strlen("  require user " . $username . "\n");
-
-		        $before = substr($file, 0, $before_length);
-		        $after = substr($file, $before_length+$user_length);
-
-		        file_put_contents($_SERVER['DOCUMENT_ROOT'] . '/.htaccess', $before . $after);
-		}
 
 		/*
 		 * Add options for this plugin to the database.
@@ -252,4 +212,46 @@ if (! class_exists('WRAPAuthenticationPlugin')) {
 
 // Load the plugin hooks, etc.
 $wrap_authentication_plugin = new WRAPAuthenticationPlugin();
+
+                /*
+                 * Adding Unity ID to .htaccess file on user creation
+                 */
+
+                function add_wrap_user($user_id) {
+
+                        $file = file_get_contents($_SERVER['DOCUMENT_ROOT'] . '/.htaccess');
+
+                        $before_length = strpos($file, "#ADD NEW USER HERE");
+
+                        $before = substr($file, 0, $before_length);
+                        $after = substr($file, $before_length);
+
+                        $user_info = get_userdata($user_id);
+                        $username = $user_info->user_login;
+                        file_put_contents($_SERVER['DOCUMENT_ROOT'] . '/.htaccess', $before . "  require user " . $username . "\n" . $after);
+                }
+
+
+                /*
+                 * Removing Unity ID from .htaccess file on user deletion
+                 */
+
+                function delete_wrap_user($user_id) {
+                        $file = file_get_contents($_SERVER['DOCUMENT_ROOT'] . '/.htaccess');
+
+                        $user_info = get_userdata($user_id);
+                        $username = $user_info->user_login;
+
+                        $before_length = strpos($file, "  require user " . $username);
+
+                        $user_length = strlen("  require user " . $username . "\n");
+
+                        $before = substr($file, 0, $before_length);
+                        $after = substr($file, $before_length+$user_length);
+
+                        file_put_contents($_SERVER['DOCUMENT_ROOT'] . '/.htaccess', $before . $after);
+                }
+
+
+
 ?>
