@@ -1,9 +1,9 @@
 <?php
 /**
  * Plugin Name: NC State Directory
- * Plugin URL: http://sciences.ncsu.edu
+ * Plugin URL: http://sciences.ncsu.edu/plugins
  * Description: Allows information about a person or department to be listed on a Wordpress page
- * Version: Beta 0.7
+ * Version: 1.0
  * Author: Scott Thompson, College of Sciences
  */
 
@@ -64,7 +64,8 @@ function ncsu_directory_shortcode($atts) {
 	if($type=="faculty") {
 		return ncsu_get_faculty();
 	}
-	if($type=="tox") {
+	/* Individual research or administrative units can be added here */
+	/*if($type=="tox") {
 		return ncsu_get_focus_area("Toxicology and Environmental Health Sciences");
 	} else if($type=="mol") {
 		return ncsu_get_focus_area("Molecular, Cellular and Developmental Biology");
@@ -78,7 +79,7 @@ function ncsu_directory_shortcode($atts) {
 		return ncsu_get_focus_area("Genetics, Genomics & Bioinformatics");
 	} else if ($type=="edu") {
 		return ncsu_get_focus_area("Education and Outreach");
-	}
+	}*/
 	if($id=="department") {
 		return ncsu_get_department();
 	}
@@ -104,33 +105,46 @@ function ncsu_get_person($unity_id) {
 	return ncsu_format_person($person, $meta);
 }
 
-function ncsu_get_focus_area($fa) {
+// Uncomment this code if you would like to use focus/administrative areas
+/*function ncsu_get_focus_area($fa) {
 	global $wpdb;
-	$existing_post = array(
+	$primary_fa = array(
 		'meta_key' => 'primary_focus_area',
 		'meta_value' => $fa,
 		'post_type' => 'ncsu_person',
 		'posts_per_page' => -1
 	);
-	$fa_members = get_posts($existing_post);
+	$fa_members = get_posts($primary_fa);
+	$secondary_fa = array(
+                'meta_key' => 'secondary_focus_area',
+                'meta_value' => $fa,
+                'post_type' => 'ncsu_person',
+                'posts_per_page' => -1
+        );
+	$fa_members = array_merge($fa_members, get_posts($secondary_fa));
 	foreach($fa_members as $person) {
 		$unity_id=$person->post_name;
         	$person_db = $wpdb->get_results("SELECT * FROM wp_ncsu_directory WHERE unity_id='$unity_id' ORDER BY alpha_name ASC", ARRAY_A);
 		$person_meta = get_post_meta($person->ID);
-		/* Prints section letter label based upon people's last names */
-                /*$cur_last_name_letter = substr($person_db[0]['alpha_name'],0,1);
+		// Prints section letter label based upon people's last names 
+                $cur_last_name_letter = substr($person_db[0]['alpha_name'],0,1);
                 if($cur_last_name_letter > $last_name_letter) {
                         $people .= '<p class="letter_section">&raquo; <u>' . $cur_last_name_letter . '</u></p>';
                         $last_name_letter = $cur_last_name_letter;
-                }*/
+                }
                 $people .= ncsu_format_person($person_db[0], $person_meta);
 	}
 	return $people;
-}
+}*/
 
 function ncsu_get_department() {
 	global $wpdb;
 	$department = $wpdb->get_results("SELECT * FROM wp_ncsu_directory ORDER BY alpha_name ASC", ARRAY_A);
+	$people .= 'Jump to:';
+	for($i=A; $i!='Z'; $i++) {
+		$people .= ' <a href="#' . $i . '">' . $i . '</a> |';
+	}
+	$people .= ' <a href="#Z">Z</a>';
 	foreach($department as $person) {
 		$existing_post = array(
 			'name' => $person['unity_id'],
@@ -141,7 +155,7 @@ function ncsu_get_department() {
 		/* Prints section letter label based upon people's last names */
 		$cur_last_name_letter = substr($person['alpha_name'],0,1);
 		if($cur_last_name_letter > $last_name_letter) {
-			$people .= '<p class="letter_section">&raquo; <u>' . $cur_last_name_letter . '</u></p>';
+			$people .= '<p class="letter_section">&raquo; <a name="' . $cur_last_name_letter . '"><u>' . $cur_last_name_letter . '</u></a></p>';
 			$last_name_letter = $cur_last_name_letter;
 		}
 		$people .= ncsu_format_person($person, $meta);
@@ -152,6 +166,11 @@ function ncsu_get_department() {
 function ncsu_get_staff() {
 	global $wpdb;
 	$department = $wpdb->get_results("SELECT * FROM wp_ncsu_directory WHERE role='staff' ORDER BY alpha_name ASC", ARRAY_A);
+	        $people .= 'Jump to:';
+        for($i=A; $i!='Z'; $i++) {
+                $people .= ' <a href="#' . $i . '">' . $i . '</a> |';
+        }
+        $people .= ' <a href="#Z">Z</a>';
 	foreach($department as $person) {
 		$existing_post = array(
 			'name' => $person['unity_id'],
@@ -162,7 +181,7 @@ function ncsu_get_staff() {
 		/* Prints section letter label based upon people's last names */
 		$cur_last_name_letter = substr($person['alpha_name'],0,1);
 		if($cur_last_name_letter > $last_name_letter) {
-			$people .= '<p class="letter_section">&raquo; <u>' . $cur_last_name_letter . '</u></p>';
+			$people .= '<p class="letter_section">&raquo; <a name="' . $cur_last_name_letter . '"><u>' . $cur_last_name_letter . '</u></a></p>';
 			$last_name_letter = $cur_last_name_letter;
 		}
 		$people .= ncsu_format_person($person, $meta);
@@ -173,6 +192,11 @@ function ncsu_get_staff() {
 function ncsu_get_faculty() {
 	global $wpdb;
 	$department = $wpdb->get_results("SELECT * FROM wp_ncsu_directory WHERE role='faculty' ORDER BY alpha_name ASC", ARRAY_A);
+	$people .= 'Jump to:';
+        for($i=A; $i!='Z'; $i++) {
+                $people .= ' <a href="#' . $i . '">' . $i . '</a> |';
+        }
+        $people .= ' <a href="#Z">Z</a>';
 	foreach($department as $person) {
 		$existing_post = array(
 			'name' => $person['unity_id'],
@@ -183,7 +207,7 @@ function ncsu_get_faculty() {
 		/* Prints section letter label based upon people's last names */
 		$cur_last_name_letter = substr($person['alpha_name'],0,1);
 		if($cur_last_name_letter > $last_name_letter) {
-			$people .= '<p class="letter_section">&raquo; <u>' . $cur_last_name_letter . '</u></p>';
+			$people .= '<p class="letter_section">&raquo; <a name="' . $cur_last_name_letter . '"><u>' . $cur_last_name_letter . '</u></a></p>';
 			$last_name_letter = $cur_last_name_letter;
 		}
 		$people .= ncsu_format_person($person, $meta);
@@ -251,6 +275,7 @@ function ncsu_format_person($p, $m) {
 }
 
 function ncsu_update_directory() {
+	ncsu_directory_db_install();
 	ncsu_directory_query();
 }
 
@@ -397,8 +422,9 @@ function ncsu_directory_db_insert_data($name, $alpha_name, $department, $email, 
 add_action( 'admin_menu', 'ncsu_plugin_menu' );
 
 function ncsu_plugin_menu() {
-	add_submenu_page( 'edit.php?post_type=ncsu_person', 'NCSU Directory Options', 'Settings', 'activate_plugins', 'ncsu_person_options', 'ncsu_plugin_options' );
+	$hook_suffix = add_submenu_page( 'edit.php?post_type=ncsu_person', 'NCSU Directory Options', 'Settings', 'activate_plugins', 'ncsu_person_options', 'ncsu_plugin_options' );
 	add_action('admin_init', 'ncsu_register_settings');
+	add_action('load-' . $hook_suffix, 'ncsu_update_directory');
 }
 
 function ncsu_register_settings() {
