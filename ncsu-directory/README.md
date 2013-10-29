@@ -25,13 +25,16 @@ Syntax
 ------
 
 To include a complete listing of the department specificed in "Settings", simply type in the body of any post or page:
+
 	[ncsu_directory]
 	
 The directory can further be filter by faculty or staff:
+
 	[ncsu_directory type="faculty"]
 	[ncsu_directory type="staff"]
 	
 You can also print an individual person's contact information by using their Unity ID:
+
 	[ncsu_directory id="UnityID"]
 	
 Questions and Help
