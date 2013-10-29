@@ -21,14 +21,13 @@ Installation
 
 1. Login as an existing user, such as admin.
 2. Add the .htaccess to your web root, or add the following code to the beginning of your existing .htaccess file.  Your .htaccess file must be writeable by the webserver.
-
-	#BEGIN WRAP
+```
 	<Files wp-login.php>
 	  AuthType WRAP
 	  require affiliation ncsu.edu
 	  #ADD NEW USER HERE
 	</Files>
-	#END WRAP
+```
 
 3. Upload "wordpress-wrap-authentication" folder to your plugins folder, usually `wp-content/plugins`.
 4. Activate the plugin on the Plugins screen.
