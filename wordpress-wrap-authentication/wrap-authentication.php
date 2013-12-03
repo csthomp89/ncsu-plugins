@@ -219,7 +219,7 @@ $wrap_authentication_plugin = new WRAPAuthenticationPlugin();
 
                 function add_wrap_user($user_id) {
 
-                        $file = file_get_contents($_SERVER['DOCUMENT_ROOT'] . '/.htaccess');
+                        $file = file_get_contents(ABSPATH . '.htaccess');
 
                         $before_length = strpos($file, "#ADD NEW USER HERE");
 
@@ -228,7 +228,7 @@ $wrap_authentication_plugin = new WRAPAuthenticationPlugin();
 
                         $user_info = get_userdata($user_id);
                         $username = $user_info->user_login;
-                        file_put_contents($_SERVER['DOCUMENT_ROOT'] . '/.htaccess', $before . "  require user " . $username . "\n" . $after);
+                        file_put_contents(ABSPATH . '.htaccess', $before . "  require user " . $username . "\n" . $after);
                 }
 
 
@@ -237,7 +237,7 @@ $wrap_authentication_plugin = new WRAPAuthenticationPlugin();
                  */
 
                 function delete_wrap_user($user_id) {
-                        $file = file_get_contents($_SERVER['DOCUMENT_ROOT'] . '/.htaccess');
+                        $file = file_get_contents(ABSPATH . '.htaccess');
 
                         $user_info = get_userdata($user_id);
                         $username = $user_info->user_login;
@@ -249,7 +249,7 @@ $wrap_authentication_plugin = new WRAPAuthenticationPlugin();
                         $before = substr($file, 0, $before_length);
                         $after = substr($file, $before_length+$user_length);
 
-                        file_put_contents($_SERVER['DOCUMENT_ROOT'] . '/.htaccess', $before . $after);
+                        file_put_contents(ABSPATH . '.htaccess', $before . $after);
                 }
 
 
