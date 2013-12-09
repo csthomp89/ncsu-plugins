@@ -390,7 +390,7 @@ function ncsu_directory_db_install() {
   alpha_name tinytext NOT NULL,
   department text NOT NULL,
   email text NOT NULL,
-  website VARCHAR(55) DEFAULT '',
+  website text DEFAULT '',
   address text NOT NULL,
   phone text NOT NULL,
   title text NOT NULL,
